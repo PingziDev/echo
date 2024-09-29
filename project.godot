@@ -11,8 +11,17 @@ config_version=5
 [application]
 
 config/name="Echo"
+run/main_scene="res://addons/echo/test/test.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Echo="*res://addons/echo/echo.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/echo/plugin.cfg")
 
 [rendering]
 
