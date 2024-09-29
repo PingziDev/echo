@@ -2,8 +2,13 @@
 .godot/
 
 # Godot-specific ignores
-.import/
-export.cfg
+.import
+default_env.tres
+default_bus_layout.tres
+icon.svg
+icon.png
+icon.png.import
+icon.svg.import
 export_presets.cfg
 
 # Imported translations (automatically generated from CSV files)
@@ -18,9 +23,13 @@ mono_crash.*.json
 .vscode/*
 .editorconfig
 .idea/
-
-# Game-specific experiments
-# TODO
-
-# etc
 .DS_Store
+project.godot
+
+# Only add echo plugin 
+/addons/*
+!/addons/echo
+
+# Place test project files here
+/test-scenes
+
