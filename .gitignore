@@ -31,5 +31,5 @@ project.godot
 !/addons/echo
 
 # Place test project files here
-/test-scenes
+# /test-scenes
 
