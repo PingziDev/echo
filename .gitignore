@@ -33,3 +33,5 @@ project.godot
 # Place test project files here
 # /test-scenes
 
+# Place project files here
+/logs

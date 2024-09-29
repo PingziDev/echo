@@ -2,7 +2,7 @@
 extends Node
 
 ##游戏管理（Game）：全局控制游戏进度、速度、难度等。
-var game: Node
+var game: Game
 ## 场景管理（Scene）：随时加载、卸载和切换多个游戏场景。
 var scene: Node
 ## 数据管理（Data）：处理游戏的存档与读档，管理动态产生的游戏数据。
@@ -24,6 +24,10 @@ var debug: Debug
 
 
 func _ready() -> void:
+	game = load("res://addons/echo/game/game.gd").new()
+	game.name = "Game"
+	add_child(game)
+
 	debug = load("res://addons/echo/debug/debug.gd").new()
-	debug.name = "debug"
+	debug.name = "Debug"
 	add_child(debug)
