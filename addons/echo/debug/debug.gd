@@ -62,7 +62,7 @@ class TheDebug_node2d:
 					var s = shp.radius
 					draw_circle(data[0].global_position, s, data[1])
 				else:
-					Logger.error("shp type not defined", shp)
+					Logger.error("shp type not defined" + shp)
 
 	func draw_shape(shp, color = Color("b3b0006b")):
 		_draw_shapes.append([shp, color])
