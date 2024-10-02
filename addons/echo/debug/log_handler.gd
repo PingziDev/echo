@@ -1,5 +1,5 @@
 class_name LogHandler
-extends Object
+extends RefCounted 
 ## LogHandler
 ## 基础类别，让其他log_handler继承，统一接口
 ## 禁止在LogHandler里面使用log，避免无穷回圈
@@ -15,8 +15,9 @@ enum LogLevel {
 # 处理日志讯息的方法，需在子类别中实作
 # 讯息以字典方式封装才能达到内容直接修改效果
 ## 讯息被包装于 data 变量
-func _handle(_level: LogLevel, _timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> void:
-	pass
+## 回傳是否繼續往下傳遞
+func _handle(_level: LogLevel, _timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> bool:
+	return true
 
 func get_level_string(level: LogLevel) -> String:
 	match level:

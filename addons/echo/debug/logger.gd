@@ -48,7 +48,7 @@ func remove_handler(handler: LogHandler) -> void:
 
 
 # 线程还没启动之前 log 的内容不会被处理
-func _log(level: LogLevel, message: String, custom_data) -> void:
+func _log(level: LogLevel, message: String, custom_data: LogHandlerData) -> void:
 	if not is_thread_running or level < current_level:
 		return
 
@@ -89,7 +89,10 @@ func _write_thread():
 				# 封装到字典的 data 变量
 				var wrapper = {"data": log_entry[2]}
 				for handler in handlers:
-					handler._handle(log_entry[0], log_entry[1], wrapper, log_entry[3])
+					if not handler._handle(log_entry[0], log_entry[1], wrapper, log_entry[3]):
+						break
+
+
 				
 			read_buffer.clear()
 				

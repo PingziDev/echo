@@ -19,6 +19,7 @@ const FG_WHITE = "white"
 
 # 一般模板输出单一颜色，客制模板可分别控制
 var custom_template := "[color={color_timestamp}][{timestamp}][/color] [color={color_level}]{level}[/color] [color={color_message}]{message}[/color]"
+# 有内嵌控制码就不需要再另外加入颜色
 var custom_inline_template := "[color={color_timestamp}][{timestamp}][/color] [color={color_level}]{level}[/color] {message}"
 var default_template := "[color={color}][{timestamp}] {message} {level}[/color]"
 
@@ -97,7 +98,7 @@ func _print_rich(_custom_data: LogHandlerData, timestamp: String, level: String,
 				})
 		print_rich(log_message)
 
-func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> void:
+func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> bool:
 	var message : String = _message.data
 	#Dictionary
 	var log_message
@@ -118,4 +119,5 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 		_:
 			_print_rich(_custom_data, timestamp, "UNKNOWN", message, color_known)
 			
+	return true
  

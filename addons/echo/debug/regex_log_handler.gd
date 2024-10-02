@@ -47,7 +47,7 @@ func strip_color(colored_message: String) -> String:
 func strip_ansi(text: String) -> String:
 	return regex.sub(text, "", true)
 
-func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> void:
+func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> bool:
 	match strip_function:
 		StripFunction.ANSI_CODE:
 			_message.data = strip_ansi( _message.data)
@@ -55,6 +55,8 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 		StripFunction.RICH_TAG:
 			regex.compile(PRINT_RICH_TAG)
 			_message.data = strip_color( _message.data)
+	
+	return true
 
 
 	

@@ -2,7 +2,7 @@ class_name ConsoleLogHandler
 extends LogHandler
 ## 标准终端机输出
 
-func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> void:
+func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> bool:
 	var message : String = _message.data
 	var log_message
 	
@@ -23,3 +23,4 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 			log_message = "[%s] UNKNOWN %s" % [timestamp, message]
 			
 	print(log_message)
+	return true

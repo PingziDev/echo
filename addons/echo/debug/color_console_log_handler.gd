@@ -69,7 +69,7 @@ func _init(default_color :Dictionary = {}):
 		color_known = default_color.get("known", color_known)
 		
 
-func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> void:
+func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> bool:
 	var message : String = _message.data
 	#Dictionary
 	var log_message
@@ -85,7 +85,7 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 				var color_m = data.get("message", color_debug)
 				log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize("DEBUG", color_l), colorize(message, color_m)]
 				print(log_message)
-				return
+				return true
 			color = color_debug
 			log_message =  "[%s] DEBUG %s" % [timestamp, message]
 			   
@@ -98,7 +98,7 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 				var color_m = data.get("message", color_info)
 				log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize("INFO", color_l), colorize(message, color_m)]
 				print(log_message)
-				return
+				return true
 			color = color_info
 			log_message =  "[%s] INFO %s" % [timestamp, message]
 
@@ -111,7 +111,7 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 				var color_m = data.get("message", color_warning)
 				log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize("WARNING", color_l), colorize(message, color_m)]
 				print(log_message)
-				return
+				return true
 			color = color_warning
 			log_message =  "[%s] WARNING %s" % [timestamp, message]
 
@@ -124,7 +124,7 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 				var color_m = data.get("message", color_error)
 				log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize("ERROR", color_l), colorize(message, color_m)]
 				print(log_message)
-				return
+				return true
 			color = color_error
 			log_message =  "[%s] ERROR %s" % [timestamp, message]
 
@@ -137,9 +137,10 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 				var color_m = data.get("message", color_known)
 				log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize("UNKNOWN", color_l), colorize(message, color_m)]
 				print(log_message)
-				return
+				return true
 			color = color_known
 			log_message =  "[%s] UNKNOWN %s" % [timestamp, message]
 			
 	print(colorize(log_message, color))
+	return true
 	
