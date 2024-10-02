@@ -19,6 +19,7 @@ const FG_WHITE = "white"
 
 # 一般模板输出单一颜色，客制模板可分别控制
 var custom_template := "[color={color_timestamp}][{timestamp}][/color] [color={color_level}]{level}[/color] [color={color_message}]{message}[/color]"
+var custom_inline_template := "[color={color_timestamp}][{timestamp}][/color] [color={color_level}]{level}[/color] {message}"
 var default_template := "[color={color}][{timestamp}] {message} {level}[/color]"
 
 var color_debug ="green"
@@ -39,6 +40,10 @@ static func make_color(t, l, m) -> LogHandlerData:
 	
 static func get_handler_data_tag() -> String:
 	return data_tag	
+	
+# 加上颜色属性
+static func colorize(text: String, color_code: String) -> String:
+	return "[color=%s]%s[/color]" % [color_code, text]
 
 # 不给初始颜色就会使用内定值
 func _init(default_color :Dictionary = {}):
@@ -53,6 +58,45 @@ func _init(default_color :Dictionary = {}):
 		color_known = default_color.get("known", color_known)
 
 
+func _print_rich(_custom_data: LogHandlerData, timestamp: String, level: String, message: String, default_colorg: String):
+	# 使用自定义颜色
+	if _custom_data and _custom_data.tag == data_tag:
+		var data : Dictionary = _custom_data.data
+		var color_t = data.get("timestamp", default_colorg)
+		var color_l = data.get("level", default_colorg)
+		var color_m = data.get("message", default_colorg)
+		var inline = data.get("inline", false)
+		var log_message
+		
+		# 使用内嵌的颜色，不需要再另外加上控制码
+		if inline:
+				log_message = custom_inline_template.format({
+				color_timestamp = color_t,
+				color_level = color_l,
+				timestamp = timestamp,
+				level = level,
+				message = message
+				})
+		else:
+			log_message = custom_template.format({
+					color_timestamp = color_t,
+					color_level = color_l,
+					color_message =color_m,
+					timestamp = timestamp,
+					level = level,
+					message = message
+					})
+		print_rich(log_message)
+		return
+	else:
+		var log_message =  default_template.format({
+				color = default_colorg,
+				timestamp = timestamp,
+				level = level,
+				message = message
+				})
+		print_rich(log_message)
+
 func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> void:
 	var message : String = _message.data
 	#Dictionary
@@ -61,123 +105,17 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 	
 	match level:
 		LogHandler.LogLevel.DEBUG:
-			# 使用自定义颜色
-			if _custom_data and _custom_data.tag == data_tag:
-				var data : Dictionary = _custom_data.data
-				var color_t = data.get("timestamp", color_debug)
-				var color_l = data.get("level", color_debug)
-				var color_m = data.get("message", color_debug)
-				log_message = custom_template.format({
-						color_timestamp = color_t,
-						color_level = color_l,
-						color_message =color_m,
-						timestamp = timestamp,
-						level = "DEBUG",
-						message = message
-						})
-				print_rich(log_message)
-				return
-			log_message =  default_template.format({
-					color = color_debug,
-					timestamp = timestamp,
-					level = "DEBUG",
-					message = message
-					})
+			_print_rich(_custom_data, timestamp, "DEBUG", message, color_debug)
 			   
 		LogHandler.LogLevel.INFO:
-			# 使用自定义颜色
-			if _custom_data and _custom_data.tag == data_tag:
-				var data : Dictionary = _custom_data.data
-				var color_t = data.get("timestamp", color_info)
-				var color_l = data.get("level", color_info)
-				var color_m = data.get("message", color_info)
-				log_message = custom_template.format({
-						color_timestamp = color_t,
-						color_level = color_l,
-						color_message =color_m,
-						timestamp = timestamp,
-						level = "INFO",
-						message = message
-						})
-				print_rich(log_message)
-				return
-			log_message =  default_template.format({
-					color = color_info,
-					timestamp = timestamp,
-					level = "INFO",
-					message = message
-					})
-
-		LogHandler.LogLevel.WARNING:
-			# 使用自定义颜色
-			if _custom_data and _custom_data.tag == data_tag:
-				var data : Dictionary = _custom_data.data
-				var color_t = data.get("timestamp", color_warning)
-				var color_l = data.get("level", color_warning)
-				var color_m = data.get("message", color_warning)
-				log_message = custom_template.format({
-						color_timestamp = color_t,
-						color_level = color_l,
-						color_message =color_m,
-						timestamp = timestamp,
-						level = "WARNING",
-						message = message
-						})
-				print_rich(log_message)
-				return
-			log_message =  default_template.format({
-					color = color_warning,
-					timestamp = timestamp,
-					level = "WARNING",
-					message = message
-					})
-
-		LogHandler.LogLevel.ERROR:
-			# 使用自定义颜色
-			if _custom_data and _custom_data.tag == data_tag:
-				var data : Dictionary = _custom_data.data
-				var color_t = data.get("timestamp", color_error)
-				var color_l = data.get("level", color_error)
-				var color_m = data.get("message", color_error)
-				log_message = custom_template.format({
-						color_timestamp = color_t,
-						color_level = color_l,
-						color_message =color_m,
-						timestamp = timestamp,
-						level = "ERROR",
-						message = message
-						})
-				print_rich(log_message)
-				return
-			log_message =  default_template.format({
-					color = color_error,
-					timestamp = timestamp,
-					level = "ERROR",
-					message = message
-					})
-
-		_:
-			# 使用自定义颜色
-			if _custom_data and _custom_data.tag == data_tag:
-				var data : Dictionary = _custom_data.data
-				var color_t = data.get("timestamp", color_known)
-				var color_l = data.get("level", color_known)
-				var color_m = data.get("message", color_known)
-				log_message = custom_template.format({
-						color_timestamp = color_t,
-						color_level = color_l,
-						color_message =color_m,
-						timestamp = timestamp,
-						level = "UNKNOWN",
-						message = message
-						})
-				print_rich(log_message)
-				return
-			log_message =  default_template.format({
-					color = color_known,
-					timestamp = timestamp,
-					level = "UNKNOWN",
-					message = message
-					})
+			_print_rich(_custom_data, timestamp, "INFO", message, color_info)
 			
-	print_rich(log_message)
+		LogHandler.LogLevel.WARNING:
+			_print_rich(_custom_data, timestamp, "WARNING", message, color_warning)
+			
+		LogHandler.LogLevel.ERROR:
+			_print_rich(_custom_data, timestamp, "ERROR", message, color_error)
+		_:
+			_print_rich(_custom_data, timestamp, "UNKNOWN", message, color_known)
+			
+ 

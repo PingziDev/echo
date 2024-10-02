@@ -90,7 +90,6 @@ func _write_thread():
 				var wrapper = {"data": log_entry[2]}
 				for handler in handlers:
 					handler._handle(log_entry[0], log_entry[1], wrapper, log_entry[3])
-
 				
 			read_buffer.clear()
 				
