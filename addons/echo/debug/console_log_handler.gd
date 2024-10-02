@@ -1,21 +1,24 @@
-# console_log_handler.gd
-extends LogHandler
-
 class_name ConsoleLogHandler
+extends LogHandler
+## 标准终端机输出
 
-func handle(level: LogHandler.LogLevel, timestamp: String, message: String) -> void:
-	var log_message = "[%s] [%s] %s" % [timestamp, get_level_string(level), message]
-	print(log_message)
-
-func get_level_string(level: LogHandler.LogLevel) -> String:
+func _handle(level: LogHandler.LogLevel, timestamp: String, message: String, _custom_data: LogHandlerData) -> void:
+	var log_message
+	
 	match level:
 		LogHandler.LogLevel.DEBUG:
-			return "DEBUG"
+			log_message = "[%s] DEBUG %s" % [timestamp, message]
+
 		LogHandler.LogLevel.INFO:
-			return "INFO"
+			log_message = "[%s] INFO %s" % [timestamp, message]
+
 		LogHandler.LogLevel.WARNING:
-			return "WARNING"
+			log_message = "[%s] WARNING %s" % [timestamp, message]
+
 		LogHandler.LogLevel.ERROR:
-			return "ERROR"
+			log_message = "[%s] ERROR %s" % [timestamp, message]
+
 		_:
-			return "UNKNOWN"
+			log_message = "[%s] UNKNOWN %s" % [timestamp, message]
+			
+	print(log_message)

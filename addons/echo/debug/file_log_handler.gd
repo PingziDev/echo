@@ -1,7 +1,7 @@
-# FileLogHandler.gd
-extends LogHandler
-
 class_name FileLogHandler
+extends LogHandler
+## FileLogHandler
+## 文档输出
 
 var log_file_path: String = "user://log.txt"
 var file
@@ -13,9 +13,8 @@ func _init(path: String = "user://log.txt"):
 		file.close()
 	else:
 		push_error("Failed to open log file: %s" % log_file_path)
-		
 
-func handle(level: LogLevel, timestamp: String, message: String) -> void:
+func _handle(level: LogLevel, timestamp: String, message: String, _custom_data: LogHandlerData) -> void:
 	var log_message = "[%s] [%s] %s" % [timestamp, get_level_string(level), message]
 	file = FileAccess.open(log_file_path, FileAccess.READ_WRITE)
 	if file:
@@ -24,16 +23,3 @@ func handle(level: LogLevel, timestamp: String, message: String) -> void:
 		file.close()
 	else:
 		push_error("Failed to write to log file: %s" % log_file_path)
-
-func get_level_string(level: LogLevel) -> String:
-	match level:
-		LogHandler.LogLevel.DEBUG:
-			return "DEBUG"
-		LogHandler.LogLevel.INFO:
-			return "INFO"
-		LogHandler.LogLevel.WARNING:
-			return "WARNING"
-		LogHandler.LogLevel.ERROR:
-			return "ERROR"
-		_:
-			return "UNKNOWN"
