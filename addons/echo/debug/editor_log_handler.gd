@@ -3,7 +3,8 @@ extends LogHandler
 ## EditorLogHandler
 ## godot 编辑器 调试工具/错误标签页
 
-func _handle(level: LogHandler.LogLevel, timestamp: String, message: String, _custom_data: LogHandlerData) -> void:
+func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> void:
+	var message : String = _message.data
 	var log_message
 	# 编辑器本身自带分类，不需要再输出Level字串
 	match level:

@@ -21,7 +21,6 @@ var log_thread: Thread
 var mutex: Mutex
 var is_thread_running: bool = false
 
-
 func _init():
 	# 初始化时不做具体操作，处理器会在场景树加入时启动
 	pass
@@ -87,8 +86,12 @@ func _write_thread():
 		# 没资料的话就跟写入缓存互换
 		if read_buffer.size() > 0:
 			for log_entry in read_buffer:
+				# 封装到字典的 data 变量
+				var wrapper = {"data": log_entry[2]}
 				for handler in handlers:
-					handler._handle(log_entry[0], log_entry[1], log_entry[2], log_entry[3])
+					handler._handle(log_entry[0], log_entry[1], wrapper, log_entry[3])
+
+				
 			read_buffer.clear()
 				
 		else:

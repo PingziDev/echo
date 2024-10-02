@@ -55,9 +55,8 @@ static func make_color(t, l, m) -> LogHandlerData:
 	return data
 	
 # 加上颜色属性
-func colorize(text: String, color_code: String) -> String:
+static func colorize(text: String, color_code: String) -> String:
 	return color_code + text + RESET
-
 	
 	
 # 不给初始颜色就会使用内定值
@@ -70,7 +69,8 @@ func _init(default_color :Dictionary = {}):
 		color_known = default_color.get("known", color_known)
 		
 
-func _handle(level: LogHandler.LogLevel, timestamp: String, message: String, _custom_data: LogHandlerData) -> void:
+func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> void:
+	var message : String = _message.data
 	#Dictionary
 	var log_message
 	var color

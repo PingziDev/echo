@@ -53,7 +53,8 @@ func _init(default_color :Dictionary = {}):
 		color_known = default_color.get("known", color_known)
 
 
-func _handle(level: LogHandler.LogLevel, timestamp: String, message: String, _custom_data: LogHandlerData) -> void:
+func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> void:
+	var message : String = _message.data
 	#Dictionary
 	var log_message
 	var color
