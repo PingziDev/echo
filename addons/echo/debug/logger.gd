@@ -15,6 +15,7 @@ var current_level: LogLevel = LogLevel.DEBUG
 var write_buffer: Array = []
 var read_buffer: Array = []
 var handlers: Array = []
+var filters: Array = []
 
 # 线程相关
 var log_thread: Thread
@@ -46,13 +47,26 @@ func add_handler(handler: LogHandler) -> void:
 func remove_handler(handler: LogHandler) -> void:
 	handlers.erase(handler)
 
+## filter 由主线程运行，尽量不要加入太复杂的filter避免影响游戏性能
+func add_filter(handler: LogHandler) -> void:
+	filters.append(handler)
+
+func remove_filter(handler: LogHandler) -> void:
+	filters.erase(handler)
 
 # 线程还没启动之前 log 的内容不会被处理
 func _log(level: LogLevel, message: String, custom_data: LogHandlerData) -> void:
+	
+	var timestamp = Time.get_datetime_string_from_system()
+
+	var wrapper = {"data": message}
+	for filter in filters:
+		if not filter._handle(level, timestamp, wrapper, custom_data):
+			return
+
 	if not is_thread_running or level < current_level:
 		return
-
-	var timestamp = Time.get_datetime_string_from_system()
+	
 	mutex.lock()
 	write_buffer.append([level, timestamp, message, custom_data])
 	mutex.unlock()

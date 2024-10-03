@@ -2,6 +2,7 @@ class_name EditorLogHandler
 extends LogHandler
 ## EditorLogHandler
 ## godot 编辑器 调试工具/错误标签页
+## 因为 EditorLogHandler 会列印出堆栈内容，所以放在filter由主线程处里才能正确显示堆栈内容
 
 func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> bool:
 	var message : String = _message.data

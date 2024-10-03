@@ -32,10 +32,10 @@ func logger_category_debug(message, category):
 
 	
 func _ready() -> void:
-	
+
 	# Logger为全局类，所有的handler只需要添加一次，请于autoload添加
-	
-	
+
+
 	# 加入一个自定义的分类处理器
 	Logger.add_handler(CategoryLogHandler.new())
 	
@@ -55,7 +55,8 @@ func _ready() -> void:
 	Logger.add_handler(ConsoleLogHandler.new())
 	
 	# 引擎编辑器除错工具
-	Logger.add_handler(EditorLogHandler.new())
+	# 因为 EditorLogHandler 会列印出堆栈内容，所以放在filter由主线程处里才能正确显示堆栈内容
+	Logger.add_filter(EditorLogHandler.new())
 
 	# 引擎编辑器 output ，带有彩色输出
 	Logger.add_handler(RichLogHandler.new())
