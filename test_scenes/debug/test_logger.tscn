@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccyraywp1of48"]
+
+[ext_resource type="Script" path="res://test_scenes/debug/test_logger.gd" id="1_3vneb"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_3vneb")

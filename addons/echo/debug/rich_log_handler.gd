@@ -21,7 +21,7 @@ const FG_WHITE = "white"
 var custom_template := "[color={color_timestamp}][{timestamp}][/color] [color={color_level}]{level}[/color] [color={color_message}]{message}[/color]"
 # 有内嵌控制码就不需要再另外加入颜色
 var custom_inline_template := "[color={color_timestamp}][{timestamp}][/color] [color={color_level}]{level}[/color] {message}"
-var default_template := "[color={color}][{timestamp}] {message} {level}[/color]"
+var default_template := "[color={color}][{timestamp}] {level} {message} [/color]"
 
 var color_debug ="green"
 var color_info = "blue"
@@ -45,6 +45,14 @@ static func get_handler_data_tag() -> String:
 # 加上颜色属性
 static func colorize(text: String, color_code: String) -> String:
 	return "[color=%s]%s[/color]" % [color_code, text]
+	
+static func make_inline() -> LogHandlerData:
+	var handler_data = LogHandlerData.new(RichLogHandler.get_handler_data_tag())
+	handler_data.data = { 
+		inline = true
+	}
+	return handler_data
+		
 
 # 不给初始颜色就会使用内定值
 func _init(default_color :Dictionary = {}):
