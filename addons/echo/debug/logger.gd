@@ -16,10 +16,14 @@ var write_buffer: Array = []
 var read_buffer: Array = []
 var handlers: Array = []
 var filters: Array = []
+# 避免等待时间过长，新增移除handler都先放在queue
+var handlers_op: Array = []
 
 # 线程相关
 var log_thread: Thread
 var mutex: Mutex
+# 操作handlers安全锁
+var handlers_op_mutex: Mutex
 var is_thread_running: bool = false
 
 func _init():
@@ -29,6 +33,7 @@ func _init():
 func _enter_tree():
 	# 启动持久线程
 	mutex = Mutex.new()
+	handlers_op_mutex = Mutex.new()
 	log_thread = Thread.new()
 	is_thread_running = true
 	log_thread.start(_write_thread)
@@ -42,10 +47,18 @@ func _exit_tree():
 
 
 func add_handler(handler: LogHandler) -> void:
-	handlers.append(handler)
+	handlers_op_mutex.lock()
+	handlers_op.append({
+		cmd = "add",
+		handler = handler})
+	handlers_op_mutex.unlock()
 
 func remove_handler(handler: LogHandler) -> void:
-	handlers.erase(handler)
+	handlers_op_mutex.lock()
+	handlers_op.append({
+		cmd = "remove",
+		handler = handler})
+	handlers_op_mutex.unlock()
 
 ## filter 由主线程运行，尽量不要加入太复杂的filter避免影响游戏性能
 func add_filter(handler: LogHandler) -> void:
@@ -85,9 +98,10 @@ func warning(message: String, custom_data = null) -> void:
 func error(message: String, custom_data = null) -> void:
 	_log(LogLevel.ERROR, message, custom_data)
 
-	
+
+
 # 交换读写缓存，需要线程安全
-func buffer_exchange():
+func swap_buffer():
 	mutex.lock()
 	var tmp = write_buffer
 	write_buffer = read_buffer
@@ -96,6 +110,19 @@ func buffer_exchange():
 
 func _write_thread():
 	while 1:
+		# 新增移除 handlers
+		handlers_op_mutex.lock()
+		if handlers_op.size() > 0:
+			for op in handlers_op:
+				match op.cmd:
+					"add":
+						handlers.append(op.handler)
+					"remove":
+						handlers.erase(op.handler)
+
+		handlers_op.clear()
+		handlers_op_mutex.unlock()
+
 		# 读取缓存里面有资料，直接处理
 		# 没资料的话就跟写入缓存互换
 		if read_buffer.size() > 0:
@@ -105,13 +132,10 @@ func _write_thread():
 				for handler in handlers:
 					if not handler._handle(log_entry[0], log_entry[1], wrapper, log_entry[3]):
 						break
-
-
-				
 			read_buffer.clear()
 				
 		else:
-			buffer_exchange();
+			swap_buffer();
 			if read_buffer.size() == 0:
 				# 必须要等待所有内容都被清空才离开，避免重要资讯没被处理
 				if not is_thread_running:
