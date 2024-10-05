@@ -10,7 +10,10 @@ enum LogLevel {
 	ERROR
 }
 
-var current_level: LogLevel = LogLevel.DEBUG
+## 开发者可以自行调整log的level
+@export_category("配置")
+@export var current_level: LogLevel = LogLevel.DEBUG
+
 #写入读取分开，减少lock使用
 var write_buffer: Array = []
 var read_buffer: Array = []
@@ -69,16 +72,14 @@ func remove_filter(handler: LogHandler) -> void:
 
 # 线程还没启动之前 log 的内容不会被处理
 func _log(level: LogLevel, message: String, custom_data: LogHandlerData) -> void:
-	
-	var timestamp = Time.get_datetime_string_from_system()
+	if not is_thread_running or level < current_level:
+		return
 
+	var timestamp = Time.get_datetime_string_from_system()
 	var wrapper = {"data": message}
 	for filter in filters:
 		if not filter._handle(level, timestamp, wrapper, custom_data):
 			return
-
-	if not is_thread_running or level < current_level:
-		return
 	
 	mutex.lock()
 	write_buffer.append([level, timestamp, wrapper.data, custom_data])
@@ -109,7 +110,7 @@ func swap_buffer():
 	mutex.unlock()
 
 func _write_thread():
-	# 這裡需要無窮迴圈，讓資料清完後再break退出
+	# 這裡需要無窮迴圈，讓資料清完後再退出
 	while 1:
 		# 新增移除 handlers
 		handlers_op_mutex.lock()
