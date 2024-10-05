@@ -34,6 +34,15 @@ func logger_category_debug(message, category):
 func _ready() -> void:
 
 	# Logger为全局类，所有的handler只需要添加一次，请于autoload添加
+	# filter 属于前端，会在主线程运行，handler为后端，会在线程运行
+
+	# 引擎编辑器调试模块
+	# 因为 EditorLogHandler 会列印出堆栈内容，所以放在filter由主线程处里才能正确显示堆栈内容
+	Logger.add_filter(EditorLogHandler.new())
+
+	# 倾印堆栈，放在前端
+	Logger.add_filter(DumpStackLogHandler.new())
+
 
 
 	# 加入一个自定义的分类处理器
@@ -54,9 +63,6 @@ func _ready() -> void:
 	# godot 自带output好像有bug, 使用print后马上接print_rich，结果print也可以解析print_rich的控制码
 	Logger.add_handler(ConsoleLogHandler.new())
 	
-	# 引擎编辑器除错工具
-	# 因为 EditorLogHandler 会列印出堆栈内容，所以放在filter由主线程处里才能正确显示堆栈内容
-	Logger.add_filter(EditorLogHandler.new())
 
 	# 引擎编辑器 output ，带有彩色输出
 	Logger.add_handler(RichLogHandler.new())
@@ -109,4 +115,3 @@ func _ready() -> void:
 	# category_log_handler 会将不在 show_category 的类别都过滤掉
 	# 将分类修改个名字试试，在试试效果~
 	logger_category_debug("you can't see me", "echo")
-	

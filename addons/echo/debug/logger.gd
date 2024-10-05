@@ -81,7 +81,7 @@ func _log(level: LogLevel, message: String, custom_data: LogHandlerData) -> void
 		return
 	
 	mutex.lock()
-	write_buffer.append([level, timestamp, message, custom_data])
+	write_buffer.append([level, timestamp, wrapper.data, custom_data])
 	mutex.unlock()
 	
 
@@ -109,6 +109,7 @@ func swap_buffer():
 	mutex.unlock()
 
 func _write_thread():
+	# 這裡需要無窮迴圈，讓資料清完後再break退出
 	while 1:
 		# 新增移除 handlers
 		handlers_op_mutex.lock()
@@ -120,7 +121,7 @@ func _write_thread():
 					"remove":
 						handlers.erase(op.handler)
 
-		handlers_op.clear()
+			handlers_op.clear()
 		handlers_op_mutex.unlock()
 
 		# 读取缓存里面有资料，直接处理
@@ -139,6 +140,6 @@ func _write_thread():
 			if read_buffer.size() == 0:
 				# 必须要等待所有内容都被清空才离开，避免重要资讯没被处理
 				if not is_thread_running:
-					break
+					return
 				# 延迟以避免过度使用 CPU
 				OS.delay_msec(50)
