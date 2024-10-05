@@ -110,7 +110,7 @@ func swap_buffer():
 	mutex.unlock()
 
 func _write_thread():
-	# 這裡需要無窮迴圈，讓資料清完後再退出
+	# 这里需要无穷回圈，让资料清完后再退出
 	while 1:
 		# 新增移除 handlers
 		handlers_op_mutex.lock()
