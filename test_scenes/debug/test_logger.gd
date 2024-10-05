@@ -102,10 +102,10 @@ func _ready() -> void:
 	var message
 	
 	# 终端机颜色内嵌
-	message	 = ColorConsoleLogHandler.colorize("I am", ColorConsoleLogHandler.FG_YELLOW) +  ColorConsoleLogHandler.colorize(" color console", ColorConsoleLogHandler.FG_CYAN) +  ColorConsoleLogHandler.colorize(" !!!", ColorConsoleLogHandler.FG_RED)
+	message	 = ColorConsoleLogHandler.colorize("I am", ColorConsoleLogHandler.FG_ORANGE) +  ColorConsoleLogHandler.colorize(" color console", ColorConsoleLogHandler.FG_PINK) +  ColorConsoleLogHandler.colorize(" !!!", ColorConsoleLogHandler.FG_PURPLE)
 	Logger.debug(message)
 	
-	message	 = RichLogHandler.colorize("I am", RichLogHandler.FG_YELLOW) +  RichLogHandler.colorize(" rich output", RichLogHandler.FG_CYAN) +  RichLogHandler.colorize(" !!!", RichLogHandler.FG_RED)
+	message	 = RichLogHandler.colorize("I am", RichLogHandler.FG_PURPLE) +  RichLogHandler.colorize(" rich output", RichLogHandler.FG_PINK) +  RichLogHandler.colorize(" !!!", RichLogHandler.FG_ORANGE)
 	Logger.debug(message, RichLogHandler.make_inline())
 	
 	# 使用变量控制输出，并封装方便使用

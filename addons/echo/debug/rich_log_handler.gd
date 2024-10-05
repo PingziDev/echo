@@ -14,6 +14,10 @@ const FG_BLUE = "blue"
 const FG_MAGENTA = "magenta"
 const FG_CYAN = "cyan"
 const FG_WHITE = "white"
+const FG_ORANGE = "orange"
+const FG_GRAY = "gray"
+const FG_PINK = "pink"
+const FG_PURPLE = "purple"
 
 
 # godot 编辑器输出窗口可能存在bug, 换行后的控制码可能被当文字列印

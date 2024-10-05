@@ -22,6 +22,11 @@ const FG_BLUE = "\u001b[34m"
 const FG_MAGENTA = "\u001b[35m"
 const FG_CYAN = "\u001b[36m"
 const FG_WHITE = "\u001b[37m"
+const FG_ORANGE = "\u001b[38;5;208m"
+const FG_GRAY = "\u001b[90m"
+const FG_PINK = "\u001b[38;5;205m"
+const FG_PURPLE = "\u001b[35m"
+
 
 const BG_BLACK = "\u001b[40m"
 const BG_RED = "\u001b[41m"
@@ -31,7 +36,10 @@ const BG_BLUE = "\u001b[44m"
 const BG_MAGENTA = "\u001b[45m"
 const BG_CYAN = "\u001b[46m"
 const BG_WHITE = "\u001b[47m"
-
+const BG_ORANGE = "\u001b[48;5;208m"
+const BG_GRAY = "\u001b[100m"
+const BG_PINK = "\u001b[48;5;205m"
+const BG_PURPLE = "\u001b[45m"
 
 const data_tag = "ColorConsoleLogHandler"
 
