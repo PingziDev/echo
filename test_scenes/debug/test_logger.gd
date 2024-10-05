@@ -90,7 +90,9 @@ func _ready() -> void:
 	#Logger.add_handler(FileLogHandler.new("res://echo.txt"))
 	
 	# 不指定路径档名
-	Logger.add_handler(FileLogHandler.new())
+	var fs : FileLogHandler = FileLogHandler.new()
+	fs.enabled = false
+	Logger.add_handler(fs)
 	
 	# 一般log
 	Logger.debug("Ready")
