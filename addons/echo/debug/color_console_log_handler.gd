@@ -75,80 +75,42 @@ func _init(default_color :Dictionary = {}):
 		color_warning = default_color.get("warning", color_warning)
 		color_error = default_color.get("error", color_error)
 		color_known = default_color.get("known", color_known)
-		
+
+func _print_color(_custom_data: LogHandlerData, timestamp: String, level: String, message: String, default_colorg: String):
+	var log_message
+	if _custom_data and _custom_data.tag == data_tag:
+		var data : Dictionary = _custom_data.data
+		var color_t = data.get("timestamp", default_colorg)
+		var color_l = data.get("level", default_colorg)
+		var color_m = data.get("message", default_colorg)
+		log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize(level, color_l), colorize(message, color_m)]
+		print(log_message)
+		return
+	
+	log_message =  "[%s] %s %s" % [timestamp, level, message]
+	print(colorize(log_message, default_colorg))
+	return
 
 func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> bool:
 	var message : String = _message.data
-	#Dictionary
 	var log_message
 	var color
 	
 	match level:
 		LogHandler.LogLevel.DEBUG:
-			# 使用自定义颜色
-			if _custom_data and _custom_data.tag == data_tag:
-				var data : Dictionary = _custom_data.data
-				var color_t = data.get("timestamp", color_debug)
-				var color_l = data.get("level", color_debug)
-				var color_m = data.get("message", color_debug)
-				log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize("DEBUG", color_l), colorize(message, color_m)]
-				print(log_message)
-				return true
-			color = color_debug
-			log_message =  "[%s] DEBUG %s" % [timestamp, message]
-			   
+			_print_color(_custom_data, timestamp, "DEBUG", message, color_debug)
+
 		LogHandler.LogLevel.INFO:
-			# 使用自定义颜色
-			if _custom_data and _custom_data.tag == data_tag:
-				var data : Dictionary = _custom_data.data
-				var color_t = data.get("timestamp", color_info)
-				var color_l = data.get("level", color_info)
-				var color_m = data.get("message", color_info)
-				log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize("INFO", color_l), colorize(message, color_m)]
-				print(log_message)
-				return true
-			color = color_info
-			log_message =  "[%s] INFO %s" % [timestamp, message]
+			_print_color(_custom_data, timestamp, "INFO", message, color_info)
 
 		LogHandler.LogLevel.WARNING:
-			# 使用自定义颜色
-			if _custom_data and _custom_data.tag == data_tag:
-				var data : Dictionary = _custom_data.data
-				var color_t = data.get("timestamp", color_warning)
-				var color_l = data.get("level", color_warning)
-				var color_m = data.get("message", color_warning)
-				log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize("WARNING", color_l), colorize(message, color_m)]
-				print(log_message)
-				return true
-			color = color_warning
-			log_message =  "[%s] WARNING %s" % [timestamp, message]
+			_print_color(_custom_data, timestamp, "WARNING", message, color_warning)
 
 		LogHandler.LogLevel.ERROR:
-			# 使用自定义颜色
-			if _custom_data and _custom_data.tag == data_tag:
-				var data : Dictionary = _custom_data.data
-				var color_t = data.get("timestamp", color_error)
-				var color_l = data.get("level", color_error)
-				var color_m = data.get("message", color_error)
-				log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize("ERROR", color_l), colorize(message, color_m)]
-				print(log_message)
-				return true
-			color = color_error
-			log_message =  "[%s] ERROR %s" % [timestamp, message]
+			_print_color(_custom_data, timestamp, "ERROR", message, color_error)
 
 		_:
-			# 使用自定义颜色
-			if _custom_data and _custom_data.tag == data_tag:
-				var data : Dictionary = _custom_data.data
-				var color_t = data.get("timestamp", color_known)
-				var color_l = data.get("level", color_known)
-				var color_m = data.get("message", color_known)
-				log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize("UNKNOWN", color_l), colorize(message, color_m)]
-				print(log_message)
-				return true
-			color = color_known
-			log_message =  "[%s] UNKNOWN %s" % [timestamp, message]
+			_print_color(_custom_data, timestamp, "UNKNOWN", message, color_known)
 			
-	print(colorize(log_message, color))
 	return true
 	
