@@ -7,8 +7,8 @@ extends LogHandler
 # stack显示行数
 var stack_size_debug := 0 
 var stack_size_info := 0
-var stack_size_warning := 6 
-var stack_size_error := 6
+var stack_size_warning := 0 
+var stack_size_error := 0
 var stack_size_known := 0
 
 var stack_no_color_template = "\t{source}:{line}"

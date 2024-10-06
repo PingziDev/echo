@@ -33,42 +33,72 @@ var color_warning = "yellow"
 var color_error = "red"
 var color_known = "cyan"
 
+# LogColor 颜色对应表
+static var color_map : Dictionary = {}
+
 # 快速建立颜色
-static func make_color(t, l, m) -> LogHandlerData:
+static func make_color(t:LogColor, l:LogColor, m:LogColor) -> LogHandlerData:
 	var data = LogHandlerData.new(RichLogHandler.get_handler_data_tag())
 	data.data = { 
-		timestamp = t,
-		level = l,
-		message = m
+		timestamp = color_map.get(t, FG_WHITE),
+		level = color_map.get(l, FG_WHITE),
+		message = color_map.get(m, FG_WHITE)
 	}
 	return data
 	
 static func get_handler_data_tag() -> String:
 	return data_tag	
 	
+# 外部一律使用 LogColor 定义
+static func colorize(text: String, color: LogColor) -> String:
+	var color_code = color_map.get(color, FG_WHITE)
+	return "[color=%s]%s[/color]" % [color_code, text]
+
 # 加上颜色属性
-static func colorize(text: String, color_code: String) -> String:
+func _colorize(text: String, color_code: String) -> String:
 	return "[color=%s]%s[/color]" % [color_code, text]
 	
+# 建立新包含使用颜色内嵌标记的 LogHandlerData
 static func make_inline() -> LogHandlerData:
 	var handler_data = LogHandlerData.new(RichLogHandler.get_handler_data_tag())
 	handler_data.data = { 
 		inline = true
 	}
 	return handler_data
+
+# 将现有LogHandlerData 添加使用颜色内嵌标记的
+static func _make_inline(handler_data : LogHandlerData):
+	handler_data.data["inline"] = true
 	
+	
+# 建立颜色对应表
+func create_color_map():	
+	color_map[LogColor.FG_BLACK] = FG_BLACK
+	color_map[LogColor.FG_RED] = FG_RED
+	color_map[LogColor.FG_GREEN] = FG_GREEN
+	color_map[LogColor.FG_YELLOW] = FG_YELLOW
+	color_map[LogColor.FG_BLUE] = FG_BLUE
+	color_map[LogColor.FG_MAGENTA] = FG_MAGENTA
+	color_map[LogColor.FG_CYAN] = FG_CYAN
+	color_map[LogColor.FG_WHITE] = FG_WHITE
+	color_map[LogColor.FG_ORANGE] = FG_ORANGE
+	color_map[LogColor.FG_GRAY] = FG_GRAY
+	color_map[LogColor.FG_PINK] = FG_PINK
+	color_map[LogColor.FG_PURPLE] = FG_PURPLE
+
 
 # 不给初始颜色就会使用内定值
 func _init(default_color :Dictionary = {}):
 	#for color in ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'pink', 'purple', 'cyan', 'white', 'orange', 'gray']:
 	#	print_rich("[color={color}]Hello world![/color]".format({color=color}))
-
 	if default_color:
 		color_debug = default_color.get("debug", color_debug)
 		color_info = default_color.get("info", color_info)
 		color_warning = default_color.get("warning", color_warning)
 		color_error = default_color.get("error", color_error)
 		color_known = default_color.get("known", color_known)
+
+	create_color_map()
 
 
 func _print_rich(_custom_data: LogHandlerData, timestamp: String, level: String, message: String, default_colorg: String):

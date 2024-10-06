@@ -5,6 +5,35 @@ extends RefCounted
 ## 禁止在LogHandler里面使用log，避免无穷回圈
 ## 所有Handler都会在线程里面运行，所以严禁场景树相关操作
 
+# 定义标准颜色
+enum LogColor {
+	FG_BLACK = 0,
+	FG_RED,
+	FG_GREEN,
+	FG_YELLOW,
+	FG_BLUE,
+	FG_MAGENTA,
+	FG_CYAN,
+	FG_WHITE,
+	FG_ORANGE,
+	FG_GRAY,
+	FG_PINK,
+	FG_PURPLE,
+
+	BG_BLACK,
+	BG_RED,
+	BG_GREEN,
+	BG_YELLOW,
+	BG_BLUE,
+	BG_MAGENTA,
+	BG_CYAN,
+	BG_WHITE,
+	BG_ORANGE,
+	BG_GRAY,
+	BG_PINK,
+	BG_PURPLE
+}
+
 enum LogLevel {
 	DEBUG = 0,
 	INFO,
