@@ -6,14 +6,14 @@ var is_editor = false
 # 依照需求决定控制元件
 func get_color() -> LogHandlerData:
 	if is_editor:
-		return RichLogHandler.make_color( RichLogHandler.FG_CYAN,
-			RichLogHandler.FG_GREEN,
-			RichLogHandler.FG_RED
+		return RichLogHandler.make_color( LogHandler.LogColor.FG_CYAN,
+			LogHandler.LogColor.FG_GREEN,
+			LogHandler.LogColor.FG_RED
 			)
 	else:
-		return ColorConsoleLogHandler.make_color( ColorConsoleLogHandler.BG_GREEN + ColorConsoleLogHandler.BOLD,
-			ColorConsoleLogHandler.BG_BLUE + ColorConsoleLogHandler.BOLD,
-			ColorConsoleLogHandler.BG_RED + ColorConsoleLogHandler.BOLD
+		return ColorConsoleLogHandler.make_color( LogHandler.LogColor.BG_GREEN,
+			LogHandler.LogColor.BG_BLUE ,
+			LogHandler.LogColor.BG_RED 
 			)
 	
 # 添加颜色	
@@ -104,11 +104,11 @@ func _ready() -> void:
 	var message
 	
 	# 终端机颜色内嵌
-	message	 = ColorConsoleLogHandler.colorize("I am", ColorConsoleLogHandler.FG_ORANGE) +  ColorConsoleLogHandler.colorize(" color console", ColorConsoleLogHandler.FG_PINK) +  ColorConsoleLogHandler.colorize(" !!!", ColorConsoleLogHandler.FG_PURPLE)
+	message	 = ColorConsoleLogHandler.colorize("I am", LogHandler.LogColor.FG_ORANGE) +  ColorConsoleLogHandler.colorize(" color console", LogHandler.LogColor.FG_PINK) +  ColorConsoleLogHandler.colorize(" !!!", LogHandler.LogColor.FG_PURPLE)
 	Logger.debug(message)
 	
-	message	 = RichLogHandler.colorize("I am", RichLogHandler.FG_PURPLE) +  RichLogHandler.colorize(" rich output", RichLogHandler.FG_PINK) +  RichLogHandler.colorize(" !!!", RichLogHandler.FG_ORANGE)
-	Logger.debug(message, RichLogHandler.make_inline())
+	message	 = RichLogHandler.colorize("I am", LogHandler.LogColor.FG_PURPLE) +  RichLogHandler.colorize(" rich output", LogHandler.LogColor.FG_PINK) +  RichLogHandler.colorize(" !!!", LogHandler.LogColor.FG_ORANGE)
+	Logger.debug(message)
 	
 	# 使用变量控制输出，并封装方便使用
 	logger_info("color switch");

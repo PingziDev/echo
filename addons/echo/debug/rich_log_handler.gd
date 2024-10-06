@@ -23,8 +23,6 @@ const FG_PURPLE = "purple"
 # godot 编辑器输出窗口可能存在bug, 换行后的控制码可能被当文字列印
 # 一般模板输出单一颜色，客制模板可分别控制
 var custom_template := "[color={color_timestamp}]{timestamp} [/color] [color={color_level}]{level} [/color] [color={color_message}]{message}[/color]"
-# 有内嵌控制码就不需要再另外加入颜色
-var custom_inline_template := "[color={color_timestamp}]{timestamp} [/color] [color={color_level}]{level} [/color]{message}"
 var default_template := "[color={color}]{timestamp} {level} {message}[/color]"
 
 var color_debug ="green"
@@ -57,19 +55,6 @@ static func colorize(text: String, color: LogColor) -> String:
 # 加上颜色属性
 func _colorize(text: String, color_code: String) -> String:
 	return "[color=%s]%s[/color]" % [color_code, text]
-	
-# 建立新包含使用颜色内嵌标记的 LogHandlerData
-static func make_inline() -> LogHandlerData:
-	var handler_data = LogHandlerData.new(RichLogHandler.get_handler_data_tag())
-	handler_data.data = { 
-		inline = true
-	}
-	return handler_data
-
-# 将现有LogHandlerData 添加使用颜色内嵌标记的
-static func _make_inline(handler_data : LogHandlerData):
-	handler_data.data["inline"] = true
-	
 	
 # 建立颜色对应表
 func create_color_map():	
@@ -109,26 +94,14 @@ func _print_rich(_custom_data: LogHandlerData, timestamp: String, level: String,
 		var color_l = data.get("level", default_colorg)
 		var color_m = data.get("message", default_colorg)
 		var inline = data.get("inline", false)
-		var log_message
-		
-		# 使用内嵌的颜色，不需要再另外加上控制码
-		if inline:
-				log_message = custom_inline_template.format({
+		var	log_message = custom_template.format({
 				color_timestamp = color_t,
 				color_level = color_l,
+				color_message =color_m,
 				timestamp = timestamp,
 				level = level,
 				message = message
 				})
-		else:
-			log_message = custom_template.format({
-					color_timestamp = color_t,
-					color_level = color_l,
-					color_message =color_m,
-					timestamp = timestamp,
-					level = level,
-					message = message
-					})
 		print_rich(log_message)
 		return
 	else:
