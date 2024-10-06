@@ -7,6 +7,8 @@ var log_file_path: String = "user://log.txt"
 var file
 # 是否写入，由主线程控制，所以不需要线程安全
 var enabled : bool = true
+#输出格式模板
+var template := "{timestamp} {level} {message}"
 
 func _init(path: String = "user://log.txt"):
 	log_file_path = path
@@ -21,7 +23,12 @@ func _handle(level: LogLevel, timestamp: String, _message: Dictionary, _custom_d
 		return true
 
 	var message : String = _message.data
-	var log_message = "[%s] [%s] %s" % [timestamp, get_level_string(level), message]
+	var log_message = template.format(
+					{
+						timestamp = timestamp,
+						level = get_level_string(level),
+						message = message,
+					})
 	file = FileAccess.open(log_file_path, FileAccess.READ_WRITE)
 	
 	# 检查档案是否成功打开

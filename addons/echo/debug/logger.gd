@@ -10,9 +10,10 @@ enum LogLevel {
 	ERROR
 }
 
-## 开发者可以自行调整log的level
 @export_category("配置")
 @export var current_level: LogLevel = LogLevel.DEBUG
+#时间戳模板
+@export var timestamp_temmplate := "{year}:{month}:{day}:{hour}:{minute}:{second}"
 
 #写入读取分开，减少lock使用
 var write_buffer: Array = []
@@ -75,7 +76,8 @@ func _log(level: LogLevel, message: String, custom_data: LogHandlerData) -> void
 	if not is_thread_running or level < current_level:
 		return
 
-	var timestamp = Time.get_datetime_string_from_system()
+	# 套用时间戳模板
+	var timestamp = timestamp_temmplate.format(Time.get_datetime_dict_from_system())
 	var wrapper = {"data": message}
 	for filter in filters:
 		if not filter._handle(level, timestamp, wrapper, custom_data):

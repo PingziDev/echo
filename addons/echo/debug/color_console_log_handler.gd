@@ -48,6 +48,9 @@ var color_info = ColorConsoleLogHandler.FG_BLUE
 var color_warning = ColorConsoleLogHandler.FG_YELLOW
 var color_error = ColorConsoleLogHandler.FG_RED
 var color_known = ColorConsoleLogHandler.FG_CYAN
+# 输出模板，让开发者可以自订输出格式
+var template := "{timestamp} {level} {message}"
+
 
 static func get_handler_data_tag() -> String:
 	return data_tag
@@ -83,11 +86,21 @@ func _print_color(_custom_data: LogHandlerData, timestamp: String, level: String
 		var color_t = data.get("timestamp", default_colorg)
 		var color_l = data.get("level", default_colorg)
 		var color_m = data.get("message", default_colorg)
-		log_message = "%s %s %s" % [colorize("["+timestamp+"]", color_t), colorize(level, color_l), colorize(message, color_m)]
+		log_message = template.format(
+				{
+					timestamp = colorize(timestamp, color_t),
+					level = colorize(level, color_l),
+					message = colorize(message, color_m),
+				})
 		print(log_message)
 		return
 	
-	log_message =  "[%s] %s %s" % [timestamp, level, message]
+	log_message = template.format(
+			{
+				timestamp = timestamp,
+				level = level, 
+				message = message, 
+			})
 	print(colorize(log_message, default_colorg))
 	return
 

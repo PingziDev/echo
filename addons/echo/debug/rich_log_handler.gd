@@ -22,10 +22,10 @@ const FG_PURPLE = "purple"
 
 # godot 编辑器输出窗口可能存在bug, 换行后的控制码可能被当文字列印
 # 一般模板输出单一颜色，客制模板可分别控制
-var custom_template := "[color={color_timestamp}][{timestamp}][/color] [color={color_level}]{level}[/color] [color={color_message}]{message}[/color]"
+var custom_template := "[color={color_timestamp}]{timestamp} [/color] [color={color_level}]{level} [/color] [color={color_message}]{message}[/color]"
 # 有内嵌控制码就不需要再另外加入颜色
-var custom_inline_template := "[color={color_timestamp}][{timestamp}][/color] [color={color_level}]{level}[/color] {message}"
-var default_template := "[color={color}][{timestamp}] {level} {message}[/color]"
+var custom_inline_template := "[color={color_timestamp}]{timestamp} [/color] [color={color_level}]{level} [/color]{message}"
+var default_template := "[color={color}]{timestamp} {level} {message}[/color]"
 
 var color_debug ="green"
 var color_info = "blue"
