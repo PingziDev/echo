@@ -7,6 +7,8 @@ extends LogHandler
 # 输出模板，让开发者可以自订输出格式
 #var template := "{timestamp} {level} {message}"
 var template := "{timestamp} {message}"
+# 私有过滤器，补足因为EditorLogHandler被添加到前端filter而无法使用其他Handler的问题
+var filter
  
 func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary, _custom_data: LogHandlerData) -> bool:
 	var message : String = _message.data
@@ -20,7 +22,10 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 						level = "WARNING",
 						message = message,
 					})
-			push_warning(log_message)
+			var wrapper = {"data": log_message}
+			if filter:
+				filter._handle(level, timestamp, wrapper, _custom_data)
+			push_warning(wrapper["data"])
 
 		LogHandler.LogLevel.ERROR:
 			log_message = template.format(
@@ -29,6 +34,9 @@ func _handle(level: LogHandler.LogLevel, timestamp: String, _message: Dictionary
 						level = "ERROR",
 						message = message,
 					})
-			push_error(log_message)
+			var wrapper = {"data": log_message}
+			if filter:
+				filter._handle(level, timestamp, wrapper, _custom_data)
+			push_error(wrapper["data"])
 	
 	return true
