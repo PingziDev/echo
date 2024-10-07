@@ -16,6 +16,10 @@ var stack_no_color_template = "\t{source}:{line}"
 # 预设跳过内容，因为logger到filter这个路径对开发者没用
 var skip := 3
 
+## 禁止在回呼里面使用log，避免成为无穷回圈
+## args: Dictionary { source, line, function }
+var on_get_stack : Callable
+
 # stack忽略的内容, 每行格式{source，function},会寻找并过滤
 var stack_ignore_filters := [
 #	{source = "logger", function = ""},
@@ -46,8 +50,16 @@ func _get_stack(stack_size) -> String:
 			if infilter:
 				continue
 
-			stack_trace_message += (stack_no_color_template.format(
-				{source = entry.source, line = str(entry.line), function = entry.function}
+			var args = { "source": entry.source,
+				"line" : str(entry.line),
+				"function" : entry.function
+			}
+
+			if on_get_stack:
+				on_get_stack.call(args)
+
+			stack_trace_message += ("\t{source}:{line} {function}".format(
+				{source = args["source"], line = args["line"], function = args["function"]}
 			))
 
 			got_stack_count += 1
@@ -57,6 +69,7 @@ func _get_stack(stack_size) -> String:
 	else:
 		##TODO: test print_debug()
 		stack_trace_message = "No stack trace available, please run from within the editor or connect to a remote debug context."
+
 	return stack_trace_message
 
 
